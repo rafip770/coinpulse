@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { Suspense } from "react";
 import LiveDataWrapper from "@/components/LiveDataWrapper";
 import Converter from "@/components/Converter";
+import ExchangeListings from "@/components/ExchangeListings";
+import TopGainersLosers from "@/components/TopGainersLosers";
 import { fetcher, getPools } from "@/lib/coingecko.actions";
 import { formatCurrency } from "@/lib/utils";
 
@@ -75,7 +78,9 @@ const Page = async ({ params }: NextPageProps) => {
           coin={coinData}
           coinOHLCData={coinOhlcData}
         >
-          <h4>Exchange Listings</h4>
+          <Suspense fallback={<div className="skeleton h-64 w-full" />}>
+            <ExchangeListings id={id} />
+          </Suspense>
         </LiveDataWrapper>
       </section>
 
@@ -109,7 +114,9 @@ const Page = async ({ params }: NextPageProps) => {
           </ul>
         </div>
 
-        <p>Top Gainers and Losers</p>
+        <Suspense fallback={<div className="skeleton h-64 w-full" />}>
+          <TopGainersLosers />
+        </Suspense>
       </section>
     </main>
   );

@@ -194,7 +194,7 @@ setLiveInterval}`; refs chartContainerRef/chartRef(IChartApi)/candleSeriesRef
   (0% change edge case → neutral handling optional; alt text) — merge.
 - `git checkout main && git pull`, then `git checkout -b feat-coin-details`.
 
-### ⬜ Step 9 — WebSocket hook + coin details page (branch `feat-coin-details`)
+### ✅ Step 9 — WebSocket hook + coin details page (branch `feat-coin-details`)
 
 - `hooks/useCoinGeckoWebSocket.ts`: exactly per transcript — refs wsRef/subscribed(Set);
   states price/trades/ohlcv/isWsReady; WS_BASE from env + `?x_cg_pro_api_key=`;
