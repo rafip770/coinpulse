@@ -6,6 +6,7 @@ read this file first, do the next unchecked step, and check it off + append to t
 Session Log at the bottom.**
 
 ## Ground rules
+
 - Project root: `/Users/rafi/WebstormProjects/coinpulse` — Rafi's own WebStorm scaffold
   (the Downloads duplicate was deleted). Next.js 16.2.10 app router, TS, Tailwind v4, npm.
 - Next 16 has breaking changes vs training data — check `node_modules/next/dist/docs/`
@@ -23,16 +24,18 @@ Session Log at the bottom.**
   scripted to stay under it.
 - WebSocket (Analyst plan) may be unavailable on the user's key — build the hook exactly
   as scripted regardless; UI must fall back to fetched data when the socket can't connect.
-- IDE steps (WebStorm, Junie, plugins, settings) are IDE-local: replicate their *outputs*
+- IDE steps (WebStorm, Junie, plugins, settings) are IDE-local: replicate their _outputs_
   (dummy data, format utils, ESLint/Prettier config, skeleton fallbacks) in code.
 
 ## Steps
 
 ### ✅ Step 0 — Scaffold
+
 `npx create-next-app@latest coinpulse` (TS, ESLint, Tailwind, app router, no src dir,
 `@/*` alias, npm). Done — git repo auto-initialized.
 
 ### ✅ Step 1 — Shadcn init + hello page + metadata
+
 - shadcn CLI ≥4.13 dropped the base-color flag/flow, so `components.json` (new-york,
   baseColor neutral, cssVariables) + `lib/utils.ts` (cn) were written by hand — identical
   output to the tutorial's `init`; deps installed: clsx, tailwind-merge,
@@ -44,11 +47,13 @@ Session Log at the bottom.**
 - Verify dev server renders it.
 
 ### ⬜ Step 2 — GitHub repo + first commit
+
 - `gh repo create coinpulse --public --source . ` equivalent of the tutorial's manual flow:
   `git add . && git commit -m "first commit" && git branch -M main && git remote add origin … && git push -u origin main`.
 - CodeRabbit connect = user action; note it and move on.
 
 ### ⬜ Step 3 — Navigation (branch `feat-navigation`)
+
 - `git checkout -b feat-navigation`.
 - Author `app/globals.css`: full dark theme (dark app bg, white primary text, purple-100
   secondary text `#…/50` usage, green accent) + Tailwind v4 `@theme` tokens for
@@ -83,13 +88,16 @@ Session Log at the bottom.**
 - Merge PR.
 
 ### ✅ Step 4 — CoinGecko API setup (done early — key obtained from user)
+
 - `.env.local` written with Rafi's demo key: `COINGECKO_API_KEY`,
   `NEXT_PUBLIC_COINGECKO_API_KEY`, `COINGECKO_BASE_URL=https://api.coingecko.com/api/v3`,
   `NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL=wss://stream.coingecko.com/v1`.
 - Fetcher (Step 6) must send `x-cg-demo-api-key` (demo header), not the pro header.
 
 ### ⬜ Step 5 — Homepage layout + DataTable + types (still on a feature branch;
+
 tutorial stayed on `feat-navigation` — do the same)
+
 - `app/page.tsx`: `<main className="main-container">` > `<section className="home-grid">`
   with coin-overview and trending-coins slots + full-width `<section className="w-full mt-7 space-y-4">` for categories.
 - Static coin overview markup (Bitcoin img from assets.coingecko.com, name/BTC, price).
@@ -111,7 +119,9 @@ tutorial stayed on `feat-navigation` — do the same)
   table (the Junie step).
 
 ### ⬜ Step 6 — Fetcher + real data + Suspense (commit
+
 `implement coin overview and trending coins ui and functionality using the fetcher utility function`)
+
 - `npm i query-string`.
 - `lib/coingecko.actions.ts`: `"use server"`; BASE_URL/API_KEY from env with throw-on-missing;
   `export async function fetcher<T>(endpoint, params?, revalidate=60): Promise<T>` using
@@ -137,13 +147,14 @@ tutorial stayed on `feat-navigation` — do the same)
   `fix coderabbit critical issues`, merge PR.
 
 ### ⬜ Step 7 — Candlestick chart (branch `feat-candlestick-chart`)
+
 - `npm install --save lightweight-charts`.
 - `constants.ts` in root: `PERIOD_BUTTONS` (1D,1W,1M,3M,6M,1Y,Max → daily…max),
   `PERIOD_CONFIG` (days+interval per period), `LIVE_INTERVAL_BUTTONS` (1s/1m),
   `getChartConfig(height, showTime)` + `getCandlestickConfig()` (dark theme colors).
 - `components/CandlestickChart.tsx` (`"use client"`): props `{children, data, coinId,
-  height=360, initialPeriod="daily", liveOhlcv=null, mode="historical", liveInterval,
-  setLiveInterval}`; refs chartContainerRef/chartRef(IChartApi)/candleSeriesRef
+height=360, initialPeriod="daily", liveOhlcv=null, mode="historical", liveInterval,
+setLiveInterval}`; refs chartContainerRef/chartRef(IChartApi)/candleSeriesRef
   (ISeriesApi<"Candlestick">)/prevOhlcDataLength; state ohlcData/period; `useTransition`;
   `fetchOHLCData(selectedPeriod)` via fetcher `/coins/{coinId}/ohlc` with PERIOD_CONFIG;
   `handlePeriodChange` with startTransition; chart-create useEffect (deps [height, period]
@@ -156,12 +167,13 @@ tutorial stayed on `feat-navigation` — do the same)
   update-frequency buttons; `disabled={isPending}` (CodeRabbit fix — no isLoading state);
   abort-controller ref canceling in-flight period fetches (CodeRabbit race fix).
 - `components/home/CoinOverview.tsx`: `Promise.all([fetcher coin, fetcher bitcoin OHLC
-  (vs_currency usd, days 1, interval hourly, precision full)])` — no redundant inner
+(vs_currency usd, days 1, interval hourly, precision full)])` — no redundant inner
   awaits (CodeRabbit fix); return chart with children markup inside try; catch → fallback.
 - Commit `implement candlestick chart`, push, PR, apply fixes, commit
   `implement fixes suggested by coderabbit`, merge; `git checkout main && git pull`.
 
 ### ⬜ Step 8 — Top categories + All Coins (branch `feat-top-categories`)
+
 - `components/home/Categories.tsx` (server): fetcher `/coins/categories` → `Category[]`;
   columns: name, top 3 gainers (images 28px), 24h change (trending icons +
   formatPercentage), market cap (formatCurrency), 24h volume; DataTable slice(0,10),
@@ -183,6 +195,7 @@ tutorial stayed on `feat-navigation` — do the same)
 - `git checkout main && git pull`, then `git checkout -b feat-coin-details`.
 
 ### ⬜ Step 9 — WebSocket hook + coin details page (branch `feat-coin-details`)
+
 - `hooks/useCoinGeckoWebSocket.ts`: exactly per transcript — refs wsRef/subscribed(Set);
   states price/trades/ohlcv/isWsReady; WS_BASE from env + `?x_cg_pro_api_key=`;
   connect useEffect (send helper, handleMessage: ping→pong, confirm_subscription→add
@@ -194,15 +207,15 @@ tutorial stayed on `feat-navigation` — do the same)
   isWsReady, liveInterval): unsubscribeAll/subscribe helpers, queueMicrotask resets,
   subscribe `cg_simple_price` {coin_id:[coinId], action:"set_tokens"}, poolAddress =
   `(poolId ?? "").replace("_", ":")` (CodeRabbit null fix), subscribe `onchain_trade`
-  + `onchain_ohlcv` {network_id, pool_addresses, action:"set_pools", interval};
-  return {price, trades, ohlcvData, isConnected}.
+  - `onchain_ohlcv` {network_id, pool_addresses, action:"set_pools", interval};
+    return {price, trades, ohlcvData, isConnected}.
 - `lib/coingecko.actions.ts`: add `getPools({id, network, contractAddress})` — fallback
   PoolData; if network+contract → onchain pools endpoint (wrapped in try/catch —
   CodeRabbit consistency fix) else `/onchain/search/pools?query=id`; return first pool.
 - `app/coins/[id]/page.tsx`: params await; `Promise.all` coin data (`/coins/{id}`,
   dex_pair_format contract_address) + OHLC (`/coins/{id}/ohlc`, usd, 1d, hourly, full);
   platform/network/contractAddress derivation; `getPools`; JSX: `<main id="coin-details-page"
-  className="page">` > section.primary (LiveDataWrapper w/ children ExchangeListings) +
+className="page">` > section.primary (LiveDataWrapper w/ children ExchangeListings) +
   section.secondary (Converter, details grid from coinDetails array — market cap, rank,
   total volume, website/explorer/community links w/ ArrowUpRight, TopGainersLosers).
 - `npx shadcn@latest add separator badge select input`.
@@ -222,7 +235,9 @@ tutorial stayed on `feat-navigation` — do the same)
   fixes, commit `implement coderabbit suggested fixes`, merge, checkout main, pull.
 
 ### ⬜ Step 10 — Exchange listings + Top gainers/losers (the "on your own" features;
+
 user said don't skip)
+
 - `components/ExchangeListings.tsx` (server): fetcher `/coins/{id}/tickers` → DataTable
   (exchange name+logo, pair, price, volume, trust score) under h4 "Exchange Listings",
   rendered as LiveDataWrapper children.
@@ -233,6 +248,7 @@ user said don't skip)
   (branch `feat-exchange-listings`).
 
 ### ⬜ Step 11 — Search modal (Cmd/Ctrl+K global search; the "active lesson" challenge)
+
 - Branch `feat-search-modal`. `npx shadcn@latest add dialog command` (cmdk).
 - `components/SearchModal.tsx` (`"use client"`): global keydown listener for ⌘K/CtrlK;
   debounced query → fetcher `/search` (client route or server action); results list
@@ -240,7 +256,8 @@ user said don't skip)
   query empty (reuse `/search/trending`). Replace the `<p>Search modal</p>` placeholder
   in Header with the trigger. Commit + PR + merge.
 
-### ⬜ Step 12 — Pre-deploy fixes + Vercel deploy  **[BLOCKER: Vercel login]**
+### ⬜ Step 12 — Pre-deploy fixes + Vercel deploy **[BLOCKER: Vercel login]**
+
 - Fix the console error the video hits on coin click (guard in websocket hook).
 - `next.config.ts`: `typescript: { ignoreBuildErrors: true }` (as the tutorial does) —
   but first run `npm run build` and fix real type errors properly if quick.
@@ -251,5 +268,6 @@ user said don't skip)
 - Verify production URL renders home, /coins, coin details, search.
 
 ## Session Log
+
 - **2026-07-20 (Fable, session 1):** Step 0 done (scaffold). Plan authored. GitHub auth
   confirmed (`rafip770`). Vercel CLI absent. CoinGecko key not yet provided.
