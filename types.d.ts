@@ -289,3 +289,15 @@ interface NextPageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
+
+/* --------------------------- Onchain pools -------------------------- */
+
+interface OnchainPoolsResponse {
+  data: {
+    id: string;
+    attributes: {
+      address: string;
+      name: string;
+    };
+  }[];
+}
