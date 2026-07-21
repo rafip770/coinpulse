@@ -46,13 +46,13 @@ Session Log at the bottom.**
   `Crypto screener app with a built-in high-frequency terminal and dashboard`.
 - Verify dev server renders it.
 
-### ⬜ Step 2 — GitHub repo + first commit
+### ✅ Step 2 — GitHub repo + first commit
 
 - `gh repo create coinpulse --public --source . ` equivalent of the tutorial's manual flow:
   `git add . && git commit -m "first commit" && git branch -M main && git remote add origin … && git push -u origin main`.
 - CodeRabbit connect = user action; note it and move on.
 
-### ⬜ Step 3 — Navigation (branch `feat-navigation`)
+### ✅ Step 3 — Navigation (branch `feat-navigation`)
 
 - `git checkout -b feat-navigation`.
 - Author `app/globals.css`: full dark theme (dark app bg, white primary text, purple-100
@@ -94,7 +94,7 @@ Session Log at the bottom.**
   `NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL=wss://stream.coingecko.com/v1`.
 - Fetcher (Step 6) must send `x-cg-demo-api-key` (demo header), not the pro header.
 
-### ⬜ Step 5 — Homepage layout + DataTable + types (still on a feature branch;
+### ✅ Step 5 — Homepage layout + DataTable + types (still on a feature branch;
 
 tutorial stayed on `feat-navigation` — do the same)
 
@@ -118,7 +118,7 @@ tutorial stayed on `feat-navigation` — do the same)
   from `lucide-react` + abs/toFixed, price) + local dummy `TrendingCoin[]` wired into the
   table (the Junie step).
 
-### ⬜ Step 6 — Fetcher + real data + Suspense (commit
+### ✅ Step 6 — Fetcher + real data + Suspense (commit
 
 `implement coin overview and trending coins ui and functionality using the fetcher utility function`)
 
@@ -271,3 +271,11 @@ user said don't skip)
 
 - **2026-07-20 (Fable, session 1):** Step 0 done (scaffold). Plan authored. GitHub auth
   confirmed (`rafip770`). Vercel CLI absent. CoinGecko key not yet provided.
+
+- **2026-07-20 (Fable, session 1, cont.):** Steps 2,3,5,6 done. Repo
+  https://github.com/rafip770/coinpulse — PR #1 (navigation) + PR #2 (overview/trending)
+  merged. Real demo-API data verified in browser (BTC price + 6 trending coins).
+  Deviations: shadcn CLI changed (components.json hand-written); Turbopack root pinned in
+  next.config.ts (stray ~/package-lock.json broke Tailwind); `react-hooks/error-boundaries`
+  downgraded to warn (video keeps the try/catch JSX pattern). Dev server via Claude
+  preview on port 3000. Now on branch feat-candlestick-chart starting Step 7.
