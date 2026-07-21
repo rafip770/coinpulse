@@ -234,7 +234,7 @@ className="page">` > section.primary (LiveDataWrapper w/ children ExchangeListin
 - Commit `implement coin details real time page`, push, PR, apply the five CodeRabbit
   fixes, commit `implement coderabbit suggested fixes`, merge, checkout main, pull.
 
-### ⬜ Step 10 — Exchange listings + Top gainers/losers (the "on your own" features;
+### ✅ Step 10 — Exchange listings + Top gainers/losers (the "on your own" features;
 
 user said don't skip)
 
