@@ -146,7 +146,7 @@ tutorial stayed on `feat-navigation` — do the same)
   fix duplicate `#trending-coins` id (h4 + div structure). Commit
   `fix coderabbit critical issues`, merge PR.
 
-### ⬜ Step 7 — Candlestick chart (branch `feat-candlestick-chart`)
+### ✅ Step 7 — Candlestick chart (branch `feat-candlestick-chart`)
 
 - `npm install --save lightweight-charts`.
 - `constants.ts` in root: `PERIOD_BUTTONS` (1D,1W,1M,3M,6M,1Y,Max → daily…max),
