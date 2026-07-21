@@ -172,7 +172,7 @@ setLiveInterval}`; refs chartContainerRef/chartRef(IChartApi)/candleSeriesRef
 - Commit `implement candlestick chart`, push, PR, apply fixes, commit
   `implement fixes suggested by coderabbit`, merge; `git checkout main && git pull`.
 
-### ⬜ Step 8 — Top categories + All Coins (branch `feat-top-categories`)
+### ✅ Step 8 — Top categories + All Coins (branch `feat-top-categories`)
 
 - `components/home/Categories.tsx` (server): fetcher `/coins/categories` → `Category[]`;
   columns: name, top 3 gainers (images 28px), 24h change (trending icons +
