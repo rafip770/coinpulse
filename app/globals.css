@@ -1,26 +1,523 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:is(.dark *));
+
+/* ------------------------------------------------------------------ */
+/* CoinPulse theme tokens (authored from the tutorial's design specs:  */
+/* dark app, white primary text, purple-100 secondary text, green      */
+/* accent used across charts, badges and the scrollbar).               */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-dark-300: #2c303d;
+  --color-dark-400: #1c1f2a;
+  --color-dark-500: #12141c;
+  --color-dark-600: #0b0d13;
+  --color-purple-100: #cfd0e4;
+  --color-green-400: #7cf2ae;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #12141c;
+  --card: #ffffff;
+  --card-foreground: #12141c;
+  --popover: #ffffff;
+  --popover-foreground: #12141c;
+  --primary: #12141c;
+  --primary-foreground: #fafafa;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #12141c;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --accent: #f5f5f5;
+  --accent-foreground: #12141c;
+  --destructive: #e7000b;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #a1a1a1;
+}
+
+.dark {
+  --background: #0b0d13;
+  --foreground: #ffffff;
+  --card: #12141c;
+  --card-foreground: #ffffff;
+  --popover: #12141c;
+  --popover-foreground: #ffffff;
+  --primary: #7cf2ae;
+  --primary-foreground: #0b0d13;
+  --secondary: #1c1f2a;
+  --secondary-foreground: #ffffff;
+  --muted: #1c1f2a;
+  --muted-foreground: #9b9cb8;
+  --accent: #1c1f2a;
+  --accent-foreground: #ffffff;
+  --destructive: #ff6467;
+  --border: rgba(207, 208, 228, 0.08);
+  --input: rgba(207, 208, 228, 0.12);
+  --ring: #7cf2ae;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ------------------------------------------------------------------ */
+/* Layout helpers                                                      */
+/* ------------------------------------------------------------------ */
+@layer components {
+  .main-container {
+    @apply mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 md:px-8;
+  }
+
+  .inner {
+    @apply flex items-center justify-between gap-4;
+  }
+
+  header {
+    @apply sticky top-0 z-40 border-b border-purple-100/5 bg-dark-600/80 backdrop-blur;
+  }
+
+  header .main-container {
+    @apply py-4;
+  }
+
+  header nav {
+    @apply flex items-center gap-6;
+  }
+
+  .nav-link {
+    @apply text-sm font-medium text-purple-100/60 transition-colors hover:text-purple-100;
+  }
+
+  .nav-link.is-active {
+    @apply text-white;
+  }
+
+  .nav-link.is-home {
+    @apply hidden md:inline-block;
+  }
+
+  .home-grid {
+    @apply grid grid-cols-1 items-start gap-7 xl:grid-cols-[minmax(0,1fr)_400px];
+  }
+
+  /* generic skeleton block for suspense fallbacks */
+  .skeleton {
+    @apply bg-dark-400 animate-pulse rounded-md;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Homepage: coin overview                                             */
+/* ------------------------------------------------------------------ */
+#coin-overview,
+#coin-overview-fallback {
+  @apply border-purple-100/5 bg-dark-500 min-h-[500px] rounded-xl border p-5;
+}
+
+#coin-overview .header,
+#coin-overview-fallback .header {
+  @apply flex items-center gap-4;
+}
+
+#coin-overview .header img {
+  @apply rounded-full;
+}
+
+#coin-overview .info p {
+  @apply text-purple-100/60 text-sm font-medium;
+}
+
+#coin-overview .info h1 {
+  @apply text-3xl font-bold text-white;
+}
+
+/* ------------------------------------------------------------------ */
+/* Homepage: trending coins + categories                               */
+/* ------------------------------------------------------------------ */
+#trending-coins,
+#trending-coins-fallback {
+  @apply border-purple-100/5 bg-dark-500 rounded-xl border p-5;
+}
+
+#trending-coins h4,
+#categories h4,
+.trades h4 {
+  @apply text-lg font-semibold text-white;
+}
+
+#trending-coins table {
+  @apply mt-3;
+}
+
+#categories,
+#categories-fallback {
+  @apply border-purple-100/5 bg-dark-500 rounded-xl border p-5;
+}
+
+.custom-scrollbar {
+  @apply overflow-x-auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-green-400) var(--color-dark-400);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-dark-400);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-green-400);
+  border-radius: 9999px;
+}
+
+/* table cell helpers used by DataTable columns */
+.name-cell {
+  @apply flex items-center gap-2.5 font-medium text-white;
+}
+
+.name-cell img {
+  @apply rounded-full;
+}
+
+.price-cell,
+.market-cap-cell,
+.volume-cell {
+  @apply text-purple-100;
+}
+
+.change-cell {
+  @apply font-medium;
+}
+
+.change-header-cell {
+  @apply whitespace-nowrap;
+}
+
+.category-cell {
+  @apply font-medium text-white;
+}
+
+.top-gainers-cell {
+  @apply flex items-center;
+}
+
+.top-gainers-cell img {
+  @apply border-dark-500 -ml-1.5 rounded-full border-2 first:ml-0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Candlestick chart                                                   */
+/* ------------------------------------------------------------------ */
+#candlestick-chart {
+  @apply mt-5 w-full;
+}
+
+.chart-header {
+  @apply flex flex-wrap items-end justify-between gap-4;
+}
+
+.button-group {
+  @apply flex flex-wrap items-center gap-1.5;
+}
+
+.config-btn {
+  @apply text-purple-100/60 hover:bg-dark-400 hover:text-purple-100 cursor-pointer rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+.config-btn-active {
+  @apply bg-dark-400 text-green-400 cursor-pointer rounded-md px-2.5 py-1.5 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+.chart {
+  @apply mt-4 w-full overflow-hidden rounded-lg;
+}
+
+/* ------------------------------------------------------------------ */
+/* Coins pagination                                                    */
+/* ------------------------------------------------------------------ */
+#coins-pagination {
+  @apply mt-6;
+}
+
+#coins-pagination .pagination-content {
+  @apply flex w-full items-center justify-between gap-2;
+}
+
+#coins-pagination .pagination-pages {
+  @apply flex items-center gap-1;
+}
+
+.pagination-control {
+  @apply select-none;
+}
+
+.control-btn {
+  @apply bg-dark-400 text-purple-100 hover:bg-dark-300 cursor-pointer rounded-md px-3 py-2 text-sm transition-colors hover:text-white;
+}
+
+.control-disabled {
+  @apply bg-dark-400/40 text-purple-100/30 cursor-not-allowed rounded-md px-3 py-2 text-sm;
+}
+
+.page-link {
+  @apply text-purple-100/70 hover:bg-dark-400 cursor-pointer rounded-md border-none px-3 py-2 text-sm transition-colors hover:text-white;
+}
+
+.page-link-active {
+  @apply bg-dark-300 font-semibold text-white;
+}
+
+.ellipsis {
+  @apply text-purple-100/40 px-1.5 text-sm;
+}
+
+/* ------------------------------------------------------------------ */
+/* Coin details page                                                   */
+/* ------------------------------------------------------------------ */
+.page {
+  @apply mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 md:px-8;
+}
+
+#coin-details-page {
+  @apply grid grid-cols-1 items-start gap-7 xl:grid-cols-[minmax(0,1fr)_380px];
+}
+
+#coin-details-page .primary {
+  @apply flex min-w-0 flex-col gap-7;
+}
+
+#coin-details-page .secondary {
+  @apply flex flex-col gap-7;
+}
+
+#coin-details-page .details {
+  @apply border-purple-100/5 bg-dark-500 rounded-xl border p-5;
+}
+
+#coin-details-page .details h4,
+#converter h4,
+#exchange-listings h4,
+#top-gainers-losers h4,
+.trend h4 {
+  @apply text-lg font-semibold text-white;
+}
+
+.details-grid {
+  @apply mt-4 grid grid-cols-2 gap-x-4 gap-y-5;
+}
+
+.details-grid .label {
+  @apply text-purple-100/50 text-xs font-medium tracking-wide uppercase;
+}
+
+.details-grid .link {
+  @apply text-green-400 flex items-center gap-1 text-base font-medium hover:underline;
+}
+
+/* ------------------------------------------------------------------ */
+/* Live data wrapper                                                   */
+/* ------------------------------------------------------------------ */
+#live-data-wrapper {
+  @apply border-purple-100/5 bg-dark-500 rounded-xl border p-5;
+}
+
+#live-data-wrapper .divider {
+  @apply bg-purple-100/5 my-5;
+}
+
+#live-data-wrapper .trend {
+  @apply w-full;
+}
+
+#live-data-wrapper .trades {
+  @apply w-full;
+}
+
+.trades-table {
+  @apply mt-3;
+}
+
+/* ------------------------------------------------------------------ */
+/* Coin header                                                         */
+/* ------------------------------------------------------------------ */
+#coin-header h3 {
+  @apply text-purple-100/60 text-sm font-medium;
+}
+
+#coin-header .info {
+  @apply mt-2 flex flex-wrap items-center gap-4;
+}
+
+#coin-header .info img {
+  @apply rounded-full;
+}
+
+#coin-header .price-row {
+  @apply flex flex-wrap items-center gap-3;
+}
+
+#coin-header .price-row h1 {
+  @apply text-4xl font-bold text-white;
+}
+
+#coin-header .badge {
+  @apply flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold;
+}
+
+#coin-header .badge-up {
+  @apply bg-green-500/10 text-green-500;
+}
+
+#coin-header .badge-down {
+  @apply bg-red-500/10 text-red-500;
+}
+
+#coin-header .stats {
+  @apply mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3;
+}
+
+#coin-header .stats li {
+  @apply bg-dark-400/50 rounded-lg p-3;
+}
+
+#coin-header .stats .label {
+  @apply text-purple-100/50 text-xs font-medium tracking-wide uppercase;
+}
+
+#coin-header .stats .value {
+  @apply mt-1 flex items-center gap-1.5 text-base font-semibold;
+}
+
+/* ------------------------------------------------------------------ */
+/* Converter                                                           */
+/* ------------------------------------------------------------------ */
+#converter {
+  @apply border-purple-100/5 bg-dark-500 rounded-xl border p-5;
+}
+
+#converter .panel {
+  @apply bg-dark-400/50 mt-4 rounded-lg p-4;
+}
+
+#converter .input-wrapper {
+  @apply flex items-center justify-between gap-3;
+}
+
+#converter .input {
+  @apply h-auto border-none bg-transparent p-0 text-2xl font-semibold text-white shadow-none focus-visible:ring-0;
+}
+
+#converter .coin-info {
+  @apply bg-dark-300 flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold text-white;
+}
+
+#converter .divider {
+  @apply relative my-4 flex items-center justify-center;
+}
+
+#converter .divider .line {
+  @apply bg-purple-100/10 absolute inset-x-0 h-px;
+}
+
+#converter .divider .icon {
+  @apply relative z-10;
+}
+
+#converter .output-wrapper {
+  @apply flex items-center justify-between gap-3;
+}
+
+#converter .output-wrapper p {
+  @apply truncate text-2xl font-semibold text-white;
+}
+
+.select-trigger {
+  @apply bg-dark-300 shrink-0 cursor-pointer rounded-full border-none px-3 py-1.5 text-sm font-semibold text-white shadow-none;
+}
+
+.select-value {
+  @apply text-white;
+}
+
+.select-content {
+  @apply border-purple-100/10 bg-dark-400 text-purple-100;
+}
+
+.select-item {
+  @apply cursor-pointer text-sm;
+}
+
+/* ------------------------------------------------------------------ */
+/* Exchange listings + top gainers/losers                              */
+/* ------------------------------------------------------------------ */
+#exchange-listings {
+  @apply w-full;
+}
+
+#top-gainers-losers {
+  @apply border-purple-100/5 bg-dark-500 rounded-xl border p-5;
+}
+
+/* ------------------------------------------------------------------ */
+/* Search modal                                                        */
+/* ------------------------------------------------------------------ */
+#search-modal {
+  @apply border-purple-100/10 bg-dark-500 text-purple-100;
+}
+
+.search-trigger {
+  @apply border-purple-100/10 bg-dark-400/60 text-purple-100/60 hover:text-purple-100 cursor-pointer rounded-md border px-3 py-1.5 text-sm transition-colors;
+}
+
+/* ------------------------------------------------------------------ */
+/* Suspense fallback skeletons                                         */
+/* ------------------------------------------------------------------ */
+#coin-overview-fallback .skeleton-avatar {
+  @apply size-14 rounded-full;
+}
+
+#trending-coins-fallback .skeleton-row,
+#categories-fallback .skeleton-row {
+  @apply mt-3 h-10 w-full;
 }
