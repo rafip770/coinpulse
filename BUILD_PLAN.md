@@ -247,7 +247,7 @@ user said don't skip)
 - Wire into coin details page; Suspense + fallbacks; commit + PR + merge
   (branch `feat-exchange-listings`).
 
-### ⬜ Step 11 — Search modal (Cmd/Ctrl+K global search; the "active lesson" challenge)
+### ✅ Step 11 — Search modal (Cmd/Ctrl+K global search; the "active lesson" challenge)
 
 - Branch `feat-search-modal`. `npx shadcn@latest add dialog command` (cmdk).
 - `components/SearchModal.tsx` (`"use client"`): global keydown listener for ⌘K/CtrlK;
@@ -256,7 +256,7 @@ user said don't skip)
   query empty (reuse `/search/trending`). Replace the `<p>Search modal</p>` placeholder
   in Header with the trigger. Commit + PR + merge.
 
-### ⬜ Step 12 — Pre-deploy fixes + Vercel deploy **[BLOCKER: Vercel login]**
+### 🔶 Step 12 — Pre-deploy fixes + Vercel deploy (build ✅, deploy = user login)
 
 - Fix the console error the video hits on coin click (guard in websocket hook).
 - `next.config.ts`: `typescript: { ignoreBuildErrors: true }` (as the tutorial does) —
@@ -279,3 +279,16 @@ user said don't skip)
   next.config.ts (stray ~/package-lock.json broke Tailwind); `react-hooks/error-boundaries`
   downgraded to warn (video keeps the try/catch JSX pattern). Dev server via Claude
   preview on port 3000. Now on branch feat-candlestick-chart starting Step 7.
+
+- **2026-07-20 (Fable, session 1, end):** Steps 7–11 done and verified in browser
+  (chart + period switching, categories, /coins pagination, coin details w/ live
+  wrapper + converter + details grid, exchange listings, top gainers/losers, ⌘K
+  search modal navigating to coin pages). PRs #3–#7 merged. Step 12: `npm run build`
+  passes with ZERO type errors — the tutorial's `ignoreBuildErrors: true` hack was
+  NOT needed and NOT added. Vercel CLI 56.4.1 installed globally; deploy blocked
+  only on `vercel login` (user action), then `vercel --prod` + paste the four
+  `.env.local` vars into Vercel project settings. Extra deviations this session:
+  demo plan rejects `interval` on /ohlc (removed, auto granularity);
+  /coins/top_gainers_losers is paid-only (derived from /coins/markets instead);
+  CommandDialog extended with a `shouldFilter` prop. WebSocket code is built as
+  scripted but the demo key can't connect — swap in an Analyst key and it lights up.
